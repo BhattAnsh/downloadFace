@@ -19,32 +19,27 @@ Tech Stack
 Installation
 
 Follow these steps to run the project locally:
-	1.	Clone the repository:
+1.Clone the repository:
 
-git clone <repository-url>
+	git clone <repository-url>
 
+2.Navigate into the project directory:
 
-	2.	Navigate into the project directory:
+	cd <project-directory>
 
-cd <project-directory>
+3.Install dependencies:
 
+	npm install
 
-	3.	Install dependencies:
+4.Run the development server:
 
-npm install
+	npm run dev
 
+5.Open the app in your browser at:
 
-	4.	Run the development server:
-
-npm run dev
-
-
-	5.	Open the app in your browser at:
-
-http://localhost:3000
+	http://localhost:3000
 
 File Structure
-
 Here is an overview of the key directories and files:
 	•	/app/: Contains the application’s pages and components.
 	•	/public/: Stores static assets, such as images and the Face API.js models.
@@ -66,14 +61,14 @@ Dependencies
 Deployment
 
 To deploy the app:
-	1.	Build the project:
+1.Build the project:
 
-npm run build
+	npm run build
 
 
-	2.	Start the production server:
+2.Start the production server:
 
-npm run start
+	npm run start
 
 
 
