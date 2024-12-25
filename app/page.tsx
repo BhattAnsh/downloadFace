@@ -21,7 +21,7 @@ export default function Home() {
             ]);
 
             const stream = await navigator.mediaDevices.getUserMedia({
-                video: { width: 300, height: 200}, // Forces a widescreen aspect ratio
+                video: { width: 300, height: 200 },
             });
             if (videoRef.current) {
                 videoRef.current.srcObject = stream;
@@ -47,42 +47,28 @@ export default function Home() {
                 height: videoRef.current.videoHeight,
             };
 
-            // Ensure canvas size matches video size
-
-
-
-            // Detect faces from the video stream
             const detections = await faceapi
                 .detectAllFaces(videoRef.current, new faceapi.TinyFaceDetectorOptions())
                 .withFaceLandmarks();
 
-            // Resize detections to match the video size
             const resizedDetections = faceapi.resizeResults(detections, displaySize);
 
-            // Get canvas contexts
-            const overlayCtx = canvasRef.current?.getContext("2d") as CanvasRenderingContext2D | null;
-            const outputCtx = outputCanvasRef.current?.getContext("2d") as CanvasRenderingContext2D | null;
+            const overlayCtx = canvasRef.current?.getContext("2d");
+            const outputCtx = outputCanvasRef.current?.getContext("2d");
 
             if (overlayCtx && outputCtx) {
-                // Clear the output canvas first, but not the overlay canvas
                 outputCtx.clearRect(0, 0, displaySize.width, displaySize.height);
-
-                // Draw video frame on the output canvas
                 outputCtx.drawImage(videoRef.current, 0, 0, displaySize.width, displaySize.height);
 
-                // Clear the overlay canvas to avoid old face detections from lingering
                 overlayCtx.clearRect(0, 0, displaySize.width, displaySize.height);
 
-                // Draw face detection results and landmarks on the overlay canvas
                 faceapi.draw.drawDetections(canvasRef.current, resizedDetections);
                 faceapi.draw.drawFaceLandmarks(outputCanvasRef.current, resizedDetections);
 
-                // Draw the overlay canvas (with detections and landmarks) on the output canvas
                 outputCtx.drawImage(overlayCtx.canvas, 0, 0);
             }
         }
 
-        // Request the next animation frame
         animationRef.current = requestAnimationFrame(detectFaces);
     };
 
@@ -137,18 +123,18 @@ export default function Home() {
     };
 
     return (
-        <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-8 sm:p-20 bg-gray-100">
-            <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-                <div className="relative">
-                    <div className="relative w-full ">
-                        <video
-                            ref={videoRef}
-                            autoPlay
-                            muted
-                            className="border-4 border-blue-500 rounded-lg shadow-lg w-full h-full object-cover"
-                            onPlay={handlePlay}
-                        />
-                    </div>                    <canvas
+        <div className="flex flex-col items-center min-h-screen p-6 sm:p-12 bg-neutral-900 text-neutral-200">
+            <h1 className="text-3xl font-bold mb-6 text-center text-white">Face Detection and Recording</h1>
+            <main className="flex flex-col items-center gap-8 w-full max-w-4xl">
+                <div className="relative w-full max-w-2xl aspect-video bg-neutral-800 rounded-lg overflow-hidden shadow-lg">
+                    <video
+                        ref={videoRef}
+                        autoPlay
+                        muted
+                        className="absolute top-0 left-0 w-full h-full object-cover"
+                        onPlay={handlePlay}
+                    />
+                    <canvas
                         ref={canvasRef}
                         className="absolute top-0 left-0 w-full h-full pointer-events-none"
                     />
@@ -159,27 +145,30 @@ export default function Home() {
                 </div>
 
                 {previewUrl && (
-                    <div className="mt-4">
-                        <h3 className="text-xl font-semibold mb-2">Preview:</h3>
+                    <div className="w-full max-w-md">
+                        <h2 className="text-lg font-semibold text-neutral-300 mb-3">Preview</h2>
                         <video
                             src={previewUrl}
                             controls
-                            className="border-4 border-green-500 rounded-lg shadow-lg w-full max-w-lg"
+                            className="w-full rounded-lg shadow-md"
                         />
                     </div>
                 )}
 
-                <div className="flex gap-4 items-center flex-col sm:flex-row">
+                <div className="flex flex-col sm:flex-row gap-4">
                     <button
                         onClick={isRecording ? stopRecording : startRecording}
-                        className={`btn px-6 py-2 rounded-lg text-white text-lg shadow ${isRecording ? "bg-red-600 hover:bg-red-700" : "bg-blue-600 hover:bg-blue-700"
-                            }`}
+                        className={`px-6 py-3 text-lg font-medium rounded-lg shadow-md transition-all ${
+                            isRecording
+                                ? "bg-red-600 hover:bg-red-700 text-white"
+                                : "bg-blue-600 hover:bg-blue-700 text-white"
+                        }`}
                     >
                         {isRecording ? "Stop Recording" : "Start Recording"}
                     </button>
                     <button
                         onClick={saveVideo}
-                        className="btn px-6 py-2 rounded-lg bg-green-600 text-white text-lg shadow hover:bg-green-700"
+                        className="px-6 py-3 text-lg font-medium rounded-lg shadow-md bg-green-600 hover:bg-green-700 text-white"
                         disabled={!recordedChunks.length}
                     >
                         Save Video
